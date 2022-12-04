@@ -374,6 +374,9 @@ func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*mode
 		return nil, err
 	}
 
+	namespace = "default"
+	fmt.Println("修改namespace为default")
+
 	_, err = validate.ValidateWorkflow(nil, nil, workflow.Workflow, validate.ValidateOpts{
 		Lint:                       false,
 		IgnoreEntrypoint:           false,
@@ -390,13 +393,13 @@ func (r *ResourceManager) CreateRun(ctx context.Context, apiRun *api.Run) (*mode
 
 	// Patched the default value to apiRun
 	if common.GetBoolConfigWithDefault(common.HasDefaultBucketEnvVar, false) {
-	for _, param := range apiRun.PipelineSpec.Parameters {
-		var err error
-		param.Value, err = common.PatchPipelineDefaultParameter(param.Value)
-		if err != nil {
-			return nil, fmt.Errorf("failed to patch default value to pipeline. Error: %v", err)
+		for _, param := range apiRun.PipelineSpec.Parameters {
+			var err error
+			param.Value, err = common.PatchPipelineDefaultParameter(param.Value)
+			if err != nil {
+				return nil, fmt.Errorf("failed to patch default value to pipeline. Error: %v", err)
+			}
 		}
-	}
 	}
 
 	// Store run metadata into database

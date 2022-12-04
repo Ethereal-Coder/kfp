@@ -16,6 +16,8 @@ package server
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	api "github.com/kubeflow/pipelines/backend/api/go_client"
@@ -135,6 +137,12 @@ func (s *RunServer) CreateRun(ctx context.Context, request *api.CreateRunRequest
 	run, err := s.resourceManager.CreateRun(ctx, request.Run)
 	if err != nil {
 		return nil, util.Wrap(err, "Failed to create a new run.")
+	}
+
+	fmt.Println("run:", run)
+	runBytes, err := json.Marshal(run)
+	if err == nil {
+		fmt.Println("run序列化后: ", string(runBytes))
 	}
 
 	if s.options.CollectMetrics {
