@@ -14,6 +14,7 @@
 
 # 1. Build api server application
 FROM golang:1.17.6-stretch as builder
+USER root
 RUN apt-get update && apt-get install -y cmake clang musl-dev openssl
 WORKDIR /go/src/github.com/kubeflow/pipelines
 COPY . .
