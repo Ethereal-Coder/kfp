@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "dev-1.8.5" ]
+    
+env:
+  IMAGE: hisunyh/kfp-apiserver:1.8.5
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file backend/Dockerfile --tag $IMAGE
+    - name: Log into registry
+      run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u hisunyh --password-stdin
+    - name: Push image
+      run: docker push $IMAGE
