@@ -14,12 +14,13 @@
 
 # 1. Build api server application
 FROM golang:1.17.6-stretch as builder
+USER root
 RUN apt-get update && apt-get install -y cmake clang musl-dev openssl
 WORKDIR /go/src/github.com/kubeflow/pipelines
 COPY . .
 RUN GO111MODULE=on go build -o /bin/apiserver backend/src/apiserver/*.go
 # Check licenses and comply with license terms.
-RUN ./hack/install-go-licenses.sh
+RUN go install github.com/google/go-licenses@d483853
 # First, make sure there's no forbidden license.
 RUN go-licenses check ./backend/src/apiserver
 RUN go-licenses csv ./backend/src/apiserver > /tmp/licenses.csv && \
