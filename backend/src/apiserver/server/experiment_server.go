@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	api "github.com/kubeflow/pipelines/backend/api/go_client"
@@ -150,9 +151,10 @@ func (s *ExperimentServer) ListExperiment(ctx context.Context, request *api.List
 			return nil, util.Wrap(err, "Failed to authorize with API resource references")
 		}
 	} else {
-		if refKey != nil && refKey.Type == common.Namespace && len(refKey.ID) > 0 {
-			return nil, util.NewInvalidInputError("In single-user mode, ListExperiment cannot filter by namespace.")
-		}
+		//if refKey != nil && refKey.Type == common.Namespace && len(refKey.ID) > 0 {
+		//	return nil, util.NewInvalidInputError("In single-user mode, ListExperiment cannot filter by namespace.")
+		//}
+		fmt.Println("跳过namespace检查")
 		// In single user mode, apply filter with empty namespace for backward compatibile.
 		filterContext = &common.FilterContext{
 			ReferenceKey: &common.ReferenceKey{Type: common.Namespace, ID: ""},
